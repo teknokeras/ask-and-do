@@ -218,3 +218,32 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node / React
+node_modules/
+.vite/
+*.tsbuildinfo
+.eslintcache
+coverage/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Secrets and local config
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+docker-compose.override.yml
+
+# Data (anchored to repo root)
+*.sqlite
+*.sqlite3
+*.db
+/corpus/
+/pgdata/
+evals/traces/
+
+# OS
+.DS_Store
