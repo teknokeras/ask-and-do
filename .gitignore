@@ -243,7 +243,7 @@ docker-compose.override.yml
 *.db
 /corpus/
 /pgdata/
-evals/traces/
+prepare/evals/traces/
 
 # OS
 .DS_Store

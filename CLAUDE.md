@@ -7,7 +7,7 @@ This is a public portfolio project. The detailed plan, architecture and eval des
 Non-negotiable rules
 Public repo hygiene. No employer or client material anywhere: no internal docs, specs, names, screenshots or copied text. Use only public docs and the mock admin API we build.
 Secrets. Only in .env (gitignored). Commit .env.example only. Never print or log tokens, keys or cookies.
-No invented results. Numbers in the README come from evals/results/ produced by the eval runner. Report failures and steps that did not help, not only wins.
+No invented results. Numbers in the README come from prepare/evals/results/ produced by the eval runner. Report failures and steps that did not help, not only wins.
 No novelty claims. The README has a "Related work" section. Build on or compare against existing tools (see docs/PLAN.md) instead of rebuilding them, and describe this project as a reference implementation.
 Permissions live in the backend. The mock admin API enforces roles from the caller's token. Never rely on the model or the prompt for access control.
 Writes are off by default. Only allowlisted tools are exposed. Write tools return a pending action that the user must confirm, and the confirmation shows the exact call (method, path, parameters).
@@ -32,19 +32,30 @@ Tooling: uv, ruff, pytest, pnpm, Docker Compose, GitHub Actions.
 Ask before adding a dependency that is not listed here.
 
 Repository layout
+
+Two groups. prepare/ runs offline before serving. runtime/ serves users once preparation is done.
+
 ask-and-do/
-├── ingest/       crawl, extract, chunk, embed, upsert (Fetcher interface)
-├── assistant/    chat endpoint, tool-calling loop, search_docs, grounding checks
-├── mcp_server/   OpenAPI to FastMCP, allowlist, confirmation flow, tool config
-├── admin_api/    mock users/groups/projects API with role checks
-├── web/          embeddable React component and host demo app
-├── evals/
-│   ├── cases/    eval questions with expected routes (tracked)
-│   ├── results/  result tables (tracked, they are the evidence)
-│   └── traces/   raw traces (gitignored, may contain tokens)
+├── prepare/
+│   ├── ingest/         crawl docs, extract, chunk, embed, write to pgvector (Fetcher interface)
+│   ├── tools/          read the OpenAPI spec, lint, allowlist, rewrite names and descriptions, write tools.yaml
+│   ├── evals/          run cases against the runtime API to tune the system
+│   │   ├── cases/      eval questions with expected routes (tracked)
+│   │   ├── results/    result tables (tracked, they are the evidence)
+│   │   └── traces/     raw traces (gitignored, may contain tokens)
+│   └── demo/           the test target: admin_api/ (mock API with role checks) and docs_site/ (static docs)
+├── runtime/
+│   ├── api/            FastAPI: chat endpoint (SSE) and action confirmation endpoint
+│   ├── assistant/      tool-calling loop: decides search_docs, a tool, both, or decline
+│   ├── search_docs/    query pgvector, not-found gate, quote verification, citations
+│   ├── mcp_tools/      load tools.yaml, call the API with the user's token, pending writes
+│   ├── common/         settings, db, LLM provider, embedder
+│   └── web/            embeddable React component and host demo app
 ├── docs/PLAN.md
 ├── docker-compose.yml
 └── README.md
+
+Dependency direction: prepare may import runtime (for example the embedder, so ingest and search use the same model). runtime never imports prepare. The groups otherwise hand off through data: ingest writes the chunks table, tools writes tools.yaml, and evals call the runtime API over HTTP. The demo target runs as separate processes and imports neither.
 Commands
 
 Target commands, to be kept accurate as they are implemented:
@@ -53,7 +64,7 @@ docker compose up starts Postgres/pgvector and the services.
 uv run pytest runs backend tests.
 uv run ruff check . and uv run ruff format . for lint and format.
 ask-and-do ingest --url <docs-url> runs ingestion (incremental by default, --reset for a full rebuild).
-ask-and-do evals runs the eval suite and writes tables to evals/results/.
+ask-and-do evals runs the eval suite and writes tables to prepare/evals/results/.
 Conventions
 Small, frequent commits with clear messages. Each feature ships with tests.
 Ingestion has fixture-based tests using saved HTML pages in the repo.
@@ -61,4 +72,4 @@ Run ruff and pytest before committing. Do not commit with failing tests.
 Update the phase checklist in docs/PLAN.md and the status note in README.md as phases complete.
 Keep the README honest about status ("in progress" until it is not).
 Ask before deleting files or changing the folder layout.
-Name the eval folder evals/cases/, not data/. The .gitignore anchors data ignores to the repo root (/corpus/, /pgdata/), and evals/results/ must stay tracked.
+Name the eval folder prepare/evals/cases/, not data/. The .gitignore anchors data ignores to the repo root (/corpus/, /pgdata/), and prepare/evals/results/ must stay tracked.

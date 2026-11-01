@@ -51,6 +51,7 @@ The eval runner is a test harness only. It is not part of the product and users 
 | License | MIT |
 | Language | Python for the backend, React and TypeScript for the frontend |
 | Orchestration | Hand-written tool-calling loop. No LangChain or LangGraph in v0.1 |
+| Layout | Two top-level folders: `prepare/` (ingest, tool prep, evals, demo target) and `runtime/` (API, assistant, search_docs, MCP tools). `prepare` may import `runtime`, never the reverse |
 | Corpus | Short product docs we write for the mock admin product (about 20 to 30 pages, served as a static site) so ground truth is known |
 | Crawler scope | Public docs, no login. Fetching sits behind a `Fetcher` interface so login can be added later |
 | Vector store | Postgres with pgvector and full-text search |
@@ -61,7 +62,7 @@ The eval runner is a test harness only. It is not part of the product and users 
 
 ### Phase 0: setup (half a day)
 
-- [ ] Repo skeleton (`ingest/`, `assistant/`, `mcp_server/`, `admin_api/`, `web/`, `evals/`)
+- [ ] Repo skeleton: `prepare/` (`ingest/`, `tools/`, `evals/`, `demo/`) and `runtime/` (`api/`, `assistant/`, `search_docs/`, `mcp_tools/`, `common/`, `web/`). See the layout in `CLAUDE.md`
 - [ ] `docker-compose.yml` with Postgres and pgvector
 - [ ] `.env.example`, CI stub that runs lint and tests
 - [ ] README skeleton: pitch, "in progress" status, empty eval table, Related work, note that all data is public docs and a mock API
@@ -108,7 +109,7 @@ Done when: an admin can create a user after confirming, a viewer's attempt is re
 See section 8. Feature freeze after this phase.
 
 - [ ] About 40 cases with expected routes, including unanswerable and near-miss cases
-- [ ] Runner that executes three configurations and writes tables to `evals/results/`
+- [ ] Runner that executes three configurations and writes tables to `prepare/evals/results/`
 - [ ] A subset wired into CI
 - [ ] README table with real numbers and a short failure analysis
 
