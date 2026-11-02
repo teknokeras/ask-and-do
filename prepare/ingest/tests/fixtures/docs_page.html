@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Creating a group · Example Docs</title></head>
+<body>
+  <header><nav><a href="/">Home</a> <a href="/docs/">Docs</a> <a href="/pricing">Pricing</a> SITE-HEADER-NAV</nav></header>
+  <aside class="sidebar">
+    <ul><li><a href="/docs/groups/">Groups</a></li><li><a href="/docs/users/">Users</a></li><li>SIDEBAR-LINK-TEXT</li></ul>
+  </aside>
+  <main>
+    <article>
+      <h1>Creating a group</h1>
+      <p>A group collects users so you can grant them access to projects together. Only admins can create groups, and every group name must be unique within the organization.</p>
+      <h2>Using the API</h2>
+      <p>Send a POST request with the group name. The response contains the new group's identifier, which you need when adding members later on.</p>
+      <pre><code>curl -X POST https://example.test/api/groups \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"name": "platform"}'</code></pre>
+      <h2>Limits</h2>
+      <p>The following limits apply to groups in every plan, and requests over a limit are rejected with an error.</p>
+      <table>
+        <tr><th>Setting</th><th>Limit</th></tr>
+        <tr><td>Members per group</td><td>500</td></tr>
+        <tr><td>Groups per organization</td><td>100</td></tr>
+      </table>
+    </article>
+    <nav class="toc">On this page: ON-THIS-PAGE-LIST</nav>
+  </main>
+  <footer>FOOTER-COPYRIGHT-TEXT · <a href="/privacy">Privacy</a></footer>
+</body>
+</html>

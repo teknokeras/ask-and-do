@@ -1,0 +1,32 @@
+[project]
+name = "ask-and-do"
+version = "0.0.1"
+description = "Reference implementation of a docs assistant that answers with citations and performs allowlisted API actions."
+readme = "README.md"
+license = "MIT"
+requires-python = "==3.12.*"
+dependencies = [
+    "httpx==0.28.1",
+    "trafilatura==2.3.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "ruff==0.17.3",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["prepare", "runtime"]
+pythonpath = ["."]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

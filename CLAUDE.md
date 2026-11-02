@@ -27,7 +27,7 @@ Tool gateway: FastMCP (from_openapi) with allowlist and description overrides.
 Mock admin API: FastAPI, SQLite, PyJWT (roles: admin, viewer).
 Lint and evals: mcpolish or MCPLint, optionally mcp-tef, pytest, our own eval runner.
 Frontend: React, TypeScript, Vite, Tailwind, assistant-ui. Small host demo app.
-Tooling: uv, ruff, pytest, pnpm, Docker Compose, GitHub Actions.
+Tooling: uv, ruff, pytest, pnpm, Docker Compose, just (task runner), GitHub Actions.
 
 Ask before adding a dependency that is not listed here.
 
@@ -60,6 +60,7 @@ Commands
 
 Target commands, to be kept accurate as they are implemented:
 
+just db-up starts Postgres/pgvector and waits until it is healthy (creates .env from .env.example if missing). just lists all commands; just db-down, db-shell, db-logs, db-reset (deletes data, asks first).
 docker compose up starts Postgres/pgvector and the services.
 uv run pytest runs backend tests.
 uv run ruff check . and uv run ruff format . for lint and format.
