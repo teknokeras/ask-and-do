@@ -10,12 +10,12 @@
     <article>
       <h1>Creating a group</h1>
       <p>A group collects users so you can grant them access to projects together. Only admins can create groups, and every group name must be unique within the organization.</p>
-      <h2>Using the API</h2>
+      <h2 id="using-the-api">Using the API<a class="headerlink" href="#using-the-api">¶</a></h2>
       <p>Send a POST request with the group name. The response contains the new group's identifier, which you need when adding members later on.</p>
       <pre><code>curl -X POST https://example.test/api/groups \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"name": "platform"}'</code></pre>
-      <h2>Limits</h2>
+      <h2 id="limits">Limits</h2>
       <p>The following limits apply to groups in every plan, and requests over a limit are rejected with an error.</p>
       <table>
         <tr><th>Setting</th><th>Limit</th></tr>
