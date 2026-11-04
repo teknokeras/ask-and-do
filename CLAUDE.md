@@ -33,7 +33,7 @@ Ask before adding a dependency that is not listed here.
 
 Repository layout
 
-Two groups. prepare/ runs offline before serving. runtime/ serves users once preparation is done.
+Two groups plus shared code. prepare/ runs offline before serving. runtime/ serves users once preparation is done. common/ holds what both need to agree on.
 
 ask-and-do/
 ├── prepare/
@@ -49,13 +49,13 @@ ask-and-do/
 │   ├── assistant/      tool-calling loop: decides search_docs, a tool, both, or decline
 │   ├── search_docs/    query pgvector, not-found gate, quote verification, citations
 │   ├── mcp_tools/      load tools.yaml, call the API with the user's token, pending writes
-│   ├── common/         settings, db, LLM provider, embedder
 │   └── web/            embeddable React component and host demo app
+├── common/             shared by prepare and runtime: settings, db, LLM provider, embedder
 ├── docs/PLAN.md
 ├── docker-compose.yml
 └── README.md
 
-Dependency direction: prepare may import runtime (for example the embedder, so ingest and search use the same model). runtime never imports prepare. The groups otherwise hand off through data: ingest writes the chunks table, tools writes tools.yaml, and evals call the runtime API over HTTP. The demo target runs as separate processes and imports neither.
+Dependency direction: prepare and runtime may import common (for example the embedder, so ingest and search use the same model). common imports neither. prepare and runtime never import each other. The groups otherwise hand off through data: ingest writes the chunks table, tools writes tools.yaml, and evals call the runtime API over HTTP. The demo target runs as separate processes and imports neither.
 Commands
 
 Target commands, to be kept accurate as they are implemented:

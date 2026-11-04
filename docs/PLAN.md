@@ -62,7 +62,7 @@ The eval runner is a test harness only. It is not part of the product and users 
 
 ### Phase 0: setup (half a day)
 
-- [ ] Repo skeleton: `prepare/` (`ingest/`, `tools/`, `evals/`, `demo/`) and `runtime/` (`api/`, `assistant/`, `search_docs/`, `mcp_tools/`, `common/`, `web/`). See the layout in `CLAUDE.md`
+- [ ] Repo skeleton: `prepare/` (`ingest/`, `tools/`, `evals/`, `demo/`) and `runtime/` (`api/`, `assistant/`, `search_docs/`, `mcp_tools/`, `web/`), plus a shared `common/`. See the layout in `CLAUDE.md`
 - [ ] `docker-compose.yml` with Postgres and pgvector
 - [ ] `.env.example`, CI stub that runs lint and tests
 - [ ] README skeleton: pitch, "in progress" status, empty eval table, Related work, note that all data is public docs and a mock API
