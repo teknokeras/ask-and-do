@@ -1,7 +1,11 @@
+import hashlib
+import uuid
 from pathlib import Path
 
+import psycopg
 import pytest
 
+from common.settings import get_settings
 from prepare.ingest.fetcher import FetchResult
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -48,3 +52,44 @@ def urlset(*urls: str) -> tuple[int, str, str]:
 @pytest.fixture
 def fixture_html():
     return lambda name: (FIXTURES / name).read_text()
+
+
+class FakeEmbedder:
+    """Deterministic 4-number vectors from a hash of the text. Records every
+    text it embeds, so tests can check what was (not) re-embedded."""
+
+    model_name = "fake/model"
+    dim = 4
+
+    def __init__(self) -> None:
+        self.embedded: list[str] = []
+
+    def _vector(self, text: str) -> list[float]:
+        digest = hashlib.sha256(text.encode()).digest()
+        return [b / 255 for b in digest[: self.dim]]
+
+    def embed_documents(self, texts):
+        self.embedded.extend(texts)
+        return [self._vector(t) for t in texts]
+
+    def embed_query(self, text: str) -> list[float]:
+        return self._vector(text)
+
+
+@pytest.fixture
+def db():
+    """A connection to the dev database (just db-up), working in a throwaway
+    schema so tests never touch real chunks. Skips when no database is running."""
+    try:
+        conn = psycopg.connect(get_settings().database_url, autocommit=True, connect_timeout=3)
+    except psycopg.OperationalError:
+        pytest.skip("database not running (just db-up)")
+    schema = f"test_{uuid.uuid4().hex[:12]}"
+    conn.execute(f"CREATE SCHEMA {schema}")
+    # public stays on the path because the vector extension lives there.
+    conn.execute(f"SET search_path TO {schema}, public")
+    try:
+        yield conn
+    finally:
+        conn.execute(f"DROP SCHEMA {schema} CASCADE")
+        conn.close()

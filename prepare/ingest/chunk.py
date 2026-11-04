@@ -75,6 +75,16 @@ class Chunk:
     def citation_url(self) -> str:
         return f"{self.url}#{self.anchor}" if self.anchor else self.url
 
+    @property
+    def embed_text(self) -> str:
+        """What gets embedded. The breadcrumb is included so a chunk that only
+        says "Set it to 30" still carries what "it" is."""
+        return embed_text(self.breadcrumb, self.body)
+
+
+def embed_text(breadcrumb: str, body: str) -> str:
+    return f"{breadcrumb}\n{body}"
+
 
 def chunk_page(page: ExtractedPage) -> list[Chunk]:
     sections = _sections(parse_blocks(page.markdown), page)
@@ -99,7 +109,7 @@ def chunk_page(page: ExtractedPage) -> list[Chunk]:
                 title=page.title,
                 breadcrumb=breadcrumb,
                 body=body,
-                chunk_hash=_hash(f"{breadcrumb}\n{body}"),
+                chunk_hash=_hash(embed_text(breadcrumb, body)),
                 position=position,
             )
         )

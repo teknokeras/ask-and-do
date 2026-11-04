@@ -82,10 +82,10 @@ Done when: the OpenAPI spec is generated, a viewer gets 403 on writes, tests pas
 
 ### Phase 2: ingestion and grounded Q&A (days 2 to 4)
 
-- [ ] Ingest pipeline (section 5)
+- [x] Ingest pipeline (section 5)
 - [ ] `search_docs` with retrieval, not-found gate and quote verification (section 6)
 - [ ] Chat endpoint returning answer, citations and a refusal state
-- [ ] Fixture-based ingest tests
+- [x] Fixture-based ingest tests
 
 Done when: a docs question returns a cited answer and an unanswerable question returns "not found". Push, update the README status, then start sharing the repo as in progress.
 

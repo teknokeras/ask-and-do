@@ -29,6 +29,10 @@ db-reset: _docker
     docker compose down -v
     just db-up
 
+# Crawl a docs site into the database, e.g. just ingest --url https://www.python-httpx.org/
+ingest *args: _env
+    uv run python -m prepare.ingest {{args}}
+
 # Create .env from .env.example if it does not exist
 _env:
     @[ -f .env ] || { cp .env.example .env; echo "created .env from .env.example (gitignored); change POSTGRES_PASSWORD if you like"; }

@@ -64,7 +64,7 @@ just db-up starts Postgres/pgvector and waits until it is healthy (creates .env 
 docker compose up starts Postgres/pgvector and the services.
 uv run pytest runs backend tests.
 uv run ruff check . and uv run ruff format . for lint and format.
-ask-and-do ingest --url <docs-url> runs ingestion (incremental by default, --reset for a full rebuild).
+just ingest --url <docs-url> (or uv run python -m prepare.ingest) runs ingestion (incremental by default, --reset for a full rebuild; --help lists options). Needs the database (just db-up).
 ask-and-do evals runs the eval suite and writes tables to prepare/evals/results/.
 Conventions
 Small, frequent commits with clear messages. Each feature ships with tests.
