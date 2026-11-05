@@ -1,0 +1,37 @@
+<!--
+title: Changelog
+section: Help
+order: 2
+description: Changes to the Larkspur API, newest first.
+-->
+<p>Changes to the Larkspur API, newest first. All changes in v1 are backward compatible unless marked <strong>Breaking</strong>.</p>
+
+<h2>v1.4 (2026-10-20)</h2>
+<ul>
+  <li>Added <code>PATCH /v1/groups/{group_id}</code> to change a group's name or description without touching its members. Before this release, <code>PUT</code> was the only way to update a group.</li>
+  <li>Added the <code>group_id</code> filter to <code>GET /v1/projects</code>.</li>
+</ul>
+
+<h2>v1.3 (2026-09-02)</h2>
+<ul>
+  <li>Invitations can be resent up to 5 times. Earlier there was no limit.</li>
+  <li>Expired invitations can now be resent instead of being sent again from scratch.</li>
+  <li><strong>Breaking:</strong> <code>GET /v1/projects</code> no longer returns archived projects by default. Add <code>?archived=true</code> to see them.</li>
+</ul>
+
+<h2>v1.2 (2026-07-15)</h2>
+<ul>
+  <li>Added <code>POST /v1/users/{user_id}/xfer</code> to transfer all of a user's projects at once.</li>
+  <li>Removing a user who owns projects now fails with <code>409 owns_projects</code> instead of leaving the projects without an owner.</li>
+</ul>
+
+<h2>v1.1 (2026-06-03)</h2>
+<ul>
+  <li>Added <code>internal</code> project visibility.</li>
+  <li>Raised the group member limit from 200 to 500.</li>
+</ul>
+
+<h2>v1.0 (2026-05-01)</h2>
+<ul>
+  <li>First stable release of the Larkspur API.</li>
+</ul>

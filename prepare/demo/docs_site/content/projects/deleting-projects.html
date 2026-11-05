@@ -1,0 +1,25 @@
+<!--
+title: Deleting projects
+section: Projects
+order: 4
+description: Permanently delete an archived project.
+-->
+<div class="warning"><p>Deleting a project is permanent. Larkspur keeps no copy, and support cannot restore a deleted project. In most cases you want to <a href="/projects/archiving-projects/">archive</a> the project instead.</p></div>
+
+<h2>Requirements</h2>
+<ul>
+  <li>Only admins can delete projects.</li>
+  <li>The project must be archived first. Deleting a project that is not archived fails with <code>409 not_archived</code>.</li>
+</ul>
+
+<h2>Request</h2>
+<pre><code class="language-bash">curl -s -X DELETE http://localhost:8000/v1/projects/prj_51c0de77 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<p>A successful deletion returns <code>204</code> with no body.</p>
+
+<h2>After deletion</h2>
+<ul>
+  <li>The project's key becomes available again for a new project.</li>
+  <li>The project no longer counts toward the project limit.</li>
+  <li>Group access to the project is removed. The groups themselves are not changed.</li>
+</ul>

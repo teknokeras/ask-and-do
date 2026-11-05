@@ -1,0 +1,28 @@
+<!--
+title: Removing users from the organization
+section: Users
+order: 5
+description: Permanently remove someone from your organization.
+-->
+<p>Removing a user takes them out of the <strong>whole organization</strong>. This is different from <a href="/groups/group-members/#remove-a-member">removing a member from a group</a>, which only affects one group.</p>
+
+<div class="warning"><p>Removal cannot be undone. To take access away temporarily, <a href="/users/user-status/">deactivate the user</a> instead.</p></div>
+
+<h2>What removal does</h2>
+<ul>
+  <li>Removes the user from every group they belong to.</li>
+  <li>Rejects all of their tokens immediately.</li>
+  <li>Frees their email address, so you can invite them again later. A re-invited person starts with no groups.</li>
+</ul>
+
+<h2>Before you remove someone</h2>
+<p>A user who owns projects cannot be removed. The request fails with <code>409 owns_projects</code>. <a href="/projects/transferring-ownership/">Transfer their projects</a> to someone else first.</p>
+
+<h2>Request</h2>
+<p>Only admins can remove users. You cannot remove yourself, and you cannot remove the last active admin.</p>
+<pre><code class="language-bash">curl -s -X DELETE http://localhost:8000/v1/org/members/usr_4f9a2c1e \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<p>Note the path: <code>/v1/org/members/{user_id}</code>, not <code>/v1/users/{user_id}</code>. There is no <code>DELETE /v1/users/{user_id}</code> endpoint.</p>
+
+<h2>Can I delete a user's data completely?</h2>
+<p>Not through the API. Removal deletes the user's membership in your organization; it does not erase records kept for security and billing purposes.</p>

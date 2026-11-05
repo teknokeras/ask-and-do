@@ -1,0 +1,27 @@
+<!--
+title: Archiving projects
+section: Projects
+order: 3
+description: Make a project read-only by archiving it, and bring it back by unarchiving.
+-->
+<p>Archiving makes a project read-only. Use it when work on a project has finished but people may still need to look at it. Archiving can be undone at any time.</p>
+
+<h2>What archiving does</h2>
+<ul>
+  <li>The project can still be viewed by everyone who could see it before.</li>
+  <li>Its name, visibility, owner and group access cannot be changed. Attempts fail with <code>409 project_archived</code>.</li>
+  <li>It is hidden from <code>GET /v1/projects</code> unless you add <code>?archived=true</code>.</li>
+  <li>Its key stays reserved, and it still counts toward the 1,000-project limit.</li>
+</ul>
+
+<h2>Archive a project</h2>
+<p>Only admins can archive projects.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/projects/prj_51c0de77/archive \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>Unarchive a project</h2>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/projects/prj_51c0de77/unarchive \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>Archive or delete?</h2>
+<p>Archive in almost every case. <a href="/projects/deleting-projects/">Deleting a project</a> is permanent and only possible after the project has been archived.</p>

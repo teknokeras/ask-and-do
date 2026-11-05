@@ -1,0 +1,36 @@
+<!--
+title: Creating groups
+section: Groups
+order: 1
+description: Create a group and optionally add its first members.
+-->
+<p>Groups collect users so you can give them access to projects together. A typical group is a team, such as <em>Platform</em> or <em>Support</em>.</p>
+
+<h2>Create a group</h2>
+<p>Only admins can create groups.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/groups \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Platform", "description": "Platform engineering", "members": ["usr_4f9a2c1e"]}'</code></pre>
+
+<h3>Fields</h3>
+<table>
+  <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>name</code></td><td>Yes</td><td>3 to 64 characters: letters, digits, spaces, hyphens and underscores.</td></tr>
+    <tr><td><code>description</code></td><td>No</td><td>Up to 280 characters.</td></tr>
+    <tr><td><code>members</code></td><td>No</td><td>A list of user IDs to add right away. All of them must be active users.</td></tr>
+  </tbody>
+</table>
+
+<h2>Naming rules</h2>
+<p>Group names are unique within the organization, and the check ignores case: if <em>Platform</em> exists, you cannot create <em>platform</em>. A duplicate name fails with <code>409 name_taken</code>.</p>
+<p>You can <a href="/groups/updating-groups/">rename a group</a> later. Renaming does not change its ID, so project access is kept.</p>
+
+<h2>Limits</h2>
+<ul>
+  <li>An organization can have up to 200 groups.</li>
+  <li>A group can have up to 500 members.</li>
+  <li>There is no limit on how many groups one user can belong to.</li>
+</ul>
+<p>Groups cannot contain other groups.</p>

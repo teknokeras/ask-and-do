@@ -1,0 +1,48 @@
+<!--
+title: Inviting users
+section: Users
+order: 2
+description: Invite someone by email, and resend or revoke pending invitations.
+-->
+<p>An invitation asks a person to join your organization. They receive an email, choose their display name, and become an active user when they accept. Until then the invitation is <em>pending</em> and the person is <strong>not</strong> a user: they do not appear in <code>GET /v1/users</code> and cannot be added to groups.</p>
+<p>To make an account right away without waiting for the person, <a href="/users/creating-users/">create the user</a> instead.</p>
+
+<h2>Send an invitation</h2>
+<p>Only admins can invite.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/invitations \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "sam@example.com", "role": "viewer", "message": "Welcome to the team!"}'</code></pre>
+<table>
+  <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>email</code></td><td>Yes</td><td>Must not belong to an existing user.</td></tr>
+    <tr><td><code>role</code></td><td>No</td><td>Role the person gets on accepting. Defaults to <code>viewer</code>.</td></tr>
+    <tr><td><code>message</code></td><td>No</td><td>Shown in the email. Up to 500 characters.</td></tr>
+  </tbody>
+</table>
+
+<h2>Invitation lifecycle</h2>
+<p>An invitation has one of four statuses:</p>
+<ul>
+  <li><code>pending</code>: sent, not yet accepted.</li>
+  <li><code>accepted</code>: the person joined. Their new user ID is in <code>user_id</code>.</li>
+  <li><code>expired</code>: not accepted within 7 days.</li>
+  <li><code>revoked</code>: an admin cancelled it.</li>
+</ul>
+<p>An organization can have at most 100 pending invitations at a time.</p>
+
+<h2>Resend an invitation</h2>
+<p>Resending emails the invitation again and resets its expiry to 7 days from now. You can resend an invitation up to 5 times. Expired invitations can be resent too; they become pending again.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/invitations/inv_93ab01cd/resend \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>Revoke an invitation</h2>
+<p>Revoking stops the link from working. Accepted invitations cannot be revoked; deactivate or remove the user instead.</p>
+<pre><code class="language-bash">curl -s -X DELETE http://localhost:8000/v1/invitations/inv_93ab01cd \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>List invitations</h2>
+<p>Only admins can list invitations. Filter by status with <code>?status=pending</code>.</p>
+<pre><code class="language-bash">curl -s "http://localhost:8000/v1/invitations?status=pending" \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>

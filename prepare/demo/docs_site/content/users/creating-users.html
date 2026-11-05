@@ -1,0 +1,46 @@
+<!--
+title: Creating users
+section: Users
+order: 1
+description: Create an active account for someone directly, without an invitation.
+-->
+<p>Creating a user makes an <strong>active account immediately</strong>. The person does not have to accept anything. Use this when you already know who the person is, for service accounts, or when moving people over from another system. If you want the person to confirm and choose their own display name, <a href="/users/inviting-users/">send an invitation</a> instead.</p>
+
+<h2>Create vs invite</h2>
+<table>
+  <thead><tr><th></th><th>Create a user</th><th>Invite a user</th></tr></thead>
+  <tbody>
+    <tr><td>Endpoint</td><td><code>POST /v1/users</code></td><td><code>POST /v1/invitations</code></td></tr>
+    <tr><td>Account active</td><td>Immediately</td><td>Only after the person accepts</td></tr>
+    <tr><td>Display name</td><td>Set by the admin</td><td>Chosen by the person</td></tr>
+    <tr><td>Email sent</td><td>A sign-in link, valid for 24 hours</td><td>An invitation, valid for 7 days</td></tr>
+    <tr><td>Can be undone</td><td>Deactivate or remove the user</td><td>Revoke the invitation before it is accepted</td></tr>
+  </tbody>
+</table>
+
+<h2>Request</h2>
+<p>Only admins can create users.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/users \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "lee@example.com", "name": "Lee Park", "role": "viewer"}'</code></pre>
+
+<h3>Fields</h3>
+<table>
+  <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>email</code></td><td>Yes</td><td>Must not belong to another user in the organization.</td></tr>
+    <tr><td><code>name</code></td><td>Yes</td><td>1 to 100 characters.</td></tr>
+    <tr><td><code>role</code></td><td>No</td><td><code>admin</code> or <code>viewer</code>. Defaults to <code>viewer</code>.</td></tr>
+  </tbody>
+</table>
+
+<h2>What happens next</h2>
+<p>Larkspur emails the new user a sign-in link. The link is valid for 24 hours. If it expires, the user can request a new one from the sign-in page; you do not need to create the account again.</p>
+
+<h2>Errors</h2>
+<ul>
+  <li><code>409 email_taken</code>: a user with this email already exists. Look them up with <code>GET /v1/users?q=lee@example.com</code>.</li>
+  <li><code>422 validation_failed</code>: a field is missing or invalid.</li>
+  <li><code>403 forbidden</code>: your token has the viewer role.</li>
+</ul>

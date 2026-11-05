@@ -33,6 +33,15 @@ db-reset: _docker
 ingest *args: _env
     uv run python -m prepare.ingest {{args}}
 
+# Build the Larkspur demo docs (the test corpus) into prepare/demo/docs_site/build/
+docs-build port="8001":
+    uv run python -m prepare.demo.docs_site.build --base-url http://localhost:{{port}}/
+
+# Build the demo docs and serve them on http://localhost:8001 (then: just ingest --url http://localhost:8001/)
+docs-serve port="8001": (docs-build port)
+    @echo "serving http://localhost:{{port}}/ (Ctrl+C to stop)"
+    uv run python -m http.server {{port}} --bind 127.0.0.1 --directory prepare/demo/docs_site/build
+
 # Create .env from .env.example if it does not exist
 _env:
     @[ -f .env ] || { cp .env.example .env; echo "created .env from .env.example (gitignored); change POSTGRES_PASSWORD if you like"; }

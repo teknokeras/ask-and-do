@@ -1,0 +1,61 @@
+<!--
+title: Users API
+section: API reference
+order: 5
+description: Endpoint reference for users, invitations and organization membership.
+-->
+<p>This page lists the user, invitation and membership endpoints. For guides with examples, see the Users section.</p>
+
+<h2>The user object</h2>
+<pre><code class="language-json">{
+  "id": "usr_4f9a2c1e",
+  "email": "ana@example.com",
+  "name": "Ana Silva",
+  "role": "admin",
+  "status": "active",
+  "created_at": "2026-03-14T09:21:07Z"
+}</code></pre>
+
+<h2>User endpoints</h2>
+<table>
+  <thead><tr><th>Method and path</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>GET /v1/users</code></td><td>List users. Filters: <code>q</code>, <code>role</code>, <code>status</code>, <code>group_id</code>.</td></tr>
+    <tr><td><code>GET /v1/users/{user_id}</code></td><td>Get one user.</td></tr>
+    <tr><td><code>POST /v1/users</code></td><td><a href="/users/creating-users/">Create an active user</a>. Body: <code>email</code>, <code>name</code>, <code>role</code>.</td></tr>
+    <tr><td><code>PATCH /v1/users/{user_id}</code></td><td>Change <code>name</code> or <a href="/users/changing-roles/"><code>role</code></a>.</td></tr>
+    <tr><td><code>POST /v1/users/{user_id}/deactivate</code></td><td><a href="/users/user-status/">Deactivate</a> a user.</td></tr>
+    <tr><td><code>POST /v1/users/{user_id}/reactivate</code></td><td>Reactivate a deactivated user.</td></tr>
+    <tr><td><code>POST /v1/users/{user_id}/xfer</code></td><td><a href="/projects/transferring-ownership/#transfer-all-projects-of-a-user">Transfer all projects</a> owned by the user. Body: <code>to_user_id</code>.</td></tr>
+  </tbody>
+</table>
+
+<h2>Organization membership</h2>
+<table>
+  <thead><tr><th>Method and path</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>DELETE /v1/org/members/{user_id}</code></td><td><a href="/users/removing-users/">Remove the user from the organization</a>. Permanent.</td></tr>
+  </tbody>
+</table>
+
+<h2>The invitation object</h2>
+<pre><code class="language-json">{
+  "id": "inv_93ab01cd",
+  "email": "sam@example.com",
+  "role": "viewer",
+  "status": "pending",
+  "expires_at": "2026-04-02T10:00:00Z",
+  "resend_count": 0,
+  "user_id": null
+}</code></pre>
+
+<h2>Invitation endpoints</h2>
+<table>
+  <thead><tr><th>Method and path</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>GET /v1/invitations</code></td><td>List invitations. Filter: <code>status</code>. Admins only.</td></tr>
+    <tr><td><code>POST /v1/invitations</code></td><td><a href="/users/inviting-users/">Invite someone</a>. Body: <code>email</code>, <code>role</code>, <code>message</code>.</td></tr>
+    <tr><td><code>POST /v1/invitations/{invitation_id}/resend</code></td><td>Resend and reset the expiry to 7 days. Up to 5 times.</td></tr>
+    <tr><td><code>DELETE /v1/invitations/{invitation_id}</code></td><td>Revoke a pending or expired invitation.</td></tr>
+  </tbody>
+</table>

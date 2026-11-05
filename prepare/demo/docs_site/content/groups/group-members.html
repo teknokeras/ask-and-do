@@ -1,0 +1,28 @@
+<!--
+title: Managing group members
+section: Groups
+order: 2
+description: Add people to a group, remove them, and list a group's members.
+-->
+<p>Use the members endpoints to change who is in a group one person at a time. To set the full member list in one call, see <a href="/groups/updating-groups/#replace-a-group-put">Replace a group</a>.</p>
+
+<h2>Add a member</h2>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/groups/grp_7d2e91b0/members \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "usr_4f9a2c1e"}'</code></pre>
+<p>Adding someone who is already a member does nothing and returns <code>200</code>. The user must be active; adding a deactivated user fails with <code>422 user_deactivated</code>. People with a pending invitation cannot be added until they accept.</p>
+
+<h2>Remove a member</h2>
+<p>Removing a member takes the user out of <strong>this group only</strong>. They keep their account, their other groups, and the projects they own. They lose access to projects that they could only see through this group.</p>
+<pre><code class="language-bash">curl -s -X DELETE http://localhost:8000/v1/groups/grp_7d2e91b0/members/usr_4f9a2c1e \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<div class="note"><p>To take someone out of the whole organization, see <a href="/users/removing-users/">Removing users from the organization</a>. That endpoint is <code>DELETE /v1/org/members/{user_id}</code>.</p></div>
+
+<h2>List members</h2>
+<p>Any role can list a group's members. The list is paginated like every other list; see <a href="/api/pagination/">Pagination and filtering</a>.</p>
+<pre><code class="language-bash">curl -s http://localhost:8000/v1/groups/grp_7d2e91b0/members \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>Who can change members</h2>
+<p>Only admins can add or remove members. Viewers get <code>403 forbidden</code>, even for groups they belong to.</p>

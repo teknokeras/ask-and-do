@@ -1,0 +1,31 @@
+<!--
+title: Core concepts
+section: Getting started
+order: 2
+description: Organizations, users, invitations, groups, projects and roles.
+-->
+<p>Larkspur has a small data model. This page explains each object and how they relate.</p>
+
+<h2>Organization</h2>
+<p>An organization is the top-level container. Every user, group and project belongs to exactly one organization. A token always acts inside one organization, so the API never needs an organization ID in the path.</p>
+
+<h2>Users</h2>
+<p>A user is a person (or a service account) with an account in your organization. Each user has an email address, a display name, a <a href="/roles/roles/">role</a> and a <a href="/users/user-status/">status</a>. User IDs start with <code>usr_</code>.</p>
+
+<h2>Invitations</h2>
+<p>An invitation is an offer to join the organization, sent by email. It is not a user yet: the person becomes a user only when they accept. Invitation IDs start with <code>inv_</code>. See <a href="/users/inviting-users/">Inviting users</a>.</p>
+
+<h2>Groups</h2>
+<p>A group is a named set of users, such as a team. Groups are how you give several people access to a project at once. A user can belong to any number of groups. Group IDs start with <code>grp_</code>.</p>
+
+<h2>Projects</h2>
+<p>A project is a unit of work with an owner, a short key such as <code>PAY</code>, and a visibility setting. Projects are shared with groups, not with individual users. Project IDs start with <code>prj_</code>.</p>
+
+<h2>Roles</h2>
+<p>Every user has one organization-wide role: <strong>admin</strong> or <strong>viewer</strong>. Admins can change things; viewers can only read. There are no per-project roles. See <a href="/roles/roles/">Roles</a>.</p>
+
+<h2>How they fit together</h2>
+<pre><code class="language-text">Organization
+├── Users ──── belong to ──► Groups ──── have access to ──► Projects
+├── Invitations (become users when accepted)
+└── Projects (each owned by one user)</code></pre>

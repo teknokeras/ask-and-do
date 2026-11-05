@@ -1,0 +1,45 @@
+<!--
+title: Creating projects
+section: Projects
+order: 1
+description: Create a project with a name, a permanent key, an owner and a visibility.
+-->
+<p>A project has a display name, a short key, one owner and a visibility setting.</p>
+
+<h2>Create a project</h2>
+<p>Only admins can create projects.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/projects \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Payments", "key": "PAY", "visibility": "private"}'</code></pre>
+
+<h3>Fields</h3>
+<table>
+  <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>name</code></td><td>Yes</td><td>1 to 80 characters. Does not have to be unique.</td></tr>
+    <tr><td><code>key</code></td><td>Yes</td><td>See <a href="#project-keys">Project keys</a>.</td></tr>
+    <tr><td><code>owner_id</code></td><td>No</td><td>An active user. Defaults to the caller.</td></tr>
+    <tr><td><code>visibility</code></td><td>No</td><td><code>private</code> (default) or <code>internal</code>. See <a href="/projects/project-access/">Project access</a>.</td></tr>
+  </tbody>
+</table>
+
+<h2>Project keys</h2>
+<p>The key is a short code that identifies the project, such as <code>PAY</code> or <code>WEB2</code>.</p>
+<ul>
+  <li>2 to 10 characters, uppercase letters and digits only.</li>
+  <li>Must start with a letter.</li>
+  <li>Unique within the organization, including archived projects.</li>
+  <li><strong>Cannot be changed</strong> after the project is created. To use a different key, create a new project.</li>
+</ul>
+<p>A key that is already used fails with <code>409 key_taken</code>. A key that breaks the format rules fails with <code>422 validation_failed</code>.</p>
+
+<h2>Editing a project</h2>
+<p>Change the name, visibility or owner later with a partial update. The key is not accepted here.</p>
+<pre><code class="language-bash">curl -s -X PATCH http://localhost:8000/v1/projects/prj_51c0de77 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Payments Platform"}'</code></pre>
+
+<h2>Limits</h2>
+<p>An organization can have up to 1,000 projects. Archived projects count toward this limit.</p>

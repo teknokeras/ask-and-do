@@ -1,0 +1,45 @@
+<!--
+title: Quickstart
+section: Getting started
+order: 1
+description: Make your first Larkspur API calls in five minutes.
+-->
+<p>This quickstart lists the users in your organization, creates a group, and adds a member to it. You need an admin token for the last two steps.</p>
+
+<h2>Before you begin</h2>
+<p>You need an API token. Tokens are issued by your organization's sign-in service, not by Larkspur. See <a href="/api/authentication/">Authentication</a> for what a token contains and how long it lasts.</p>
+<p>All examples use the base URL <code>http://localhost:8000/v1</code>. Store your token in an environment variable so it does not end up in your shell history:</p>
+<pre><code class="language-bash">export LARKSPUR_TOKEN="paste-your-token-here"</code></pre>
+
+<h2>Step 1: list users</h2>
+<p>Any role can list users.</p>
+<pre><code class="language-bash">curl -s http://localhost:8000/v1/users \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<p>The response is a page of users. Lists return at most 50 items unless you ask for more; see <a href="/api/pagination/">Pagination and filtering</a>.</p>
+<pre><code class="language-json">{
+  "data": [
+    {"id": "usr_4f9a2c1e", "email": "ana@example.com", "name": "Ana Silva",
+     "role": "admin", "status": "active"}
+  ],
+  "next_cursor": null
+}</code></pre>
+
+<h2>Step 2: create a group</h2>
+<p>Creating a group needs the admin role. Group names must be unique in your organization.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/groups \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Platform", "description": "Platform engineering"}'</code></pre>
+
+<h2>Step 3: add a member</h2>
+<p>Use the group ID from the previous response and a user ID from step 1.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/groups/grp_7d2e91b0/members \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "usr_4f9a2c1e"}'</code></pre>
+
+<h2>Next steps</h2>
+<ul>
+  <li>Learn the difference between <a href="/users/creating-users/">creating</a> and <a href="/users/inviting-users/">inviting</a> users.</li>
+  <li>Give your new group access to a project: <a href="/projects/project-access/">Project access</a>.</li>
+</ul>

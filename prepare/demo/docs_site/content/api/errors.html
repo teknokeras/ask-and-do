@@ -1,0 +1,54 @@
+<!--
+title: Errors
+section: API reference
+order: 2
+description: The error format and every error code the API returns.
+-->
+<p>When a request fails, the API returns a 4xx or 5xx status and a JSON body in the same format every time.</p>
+
+<h2>Error format</h2>
+<pre><code class="language-json">{
+  "error": {
+    "code": "name_taken",
+    "message": "A group named 'Platform' already exists.",
+    "request_id": "req_8a1f0c3d9e"
+  }
+}</code></pre>
+<p>Use <code>code</code> in your program; it is stable. <code>message</code> is for people and may change. Include <code>request_id</code> when you report a problem.</p>
+
+<h2>Error codes</h2>
+<table>
+  <thead><tr><th>Status</th><th>Code</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>400</td><td><code>invalid_request</code></td><td>The body is not valid JSON, or a query parameter has the wrong type.</td></tr>
+    <tr><td>401</td><td><code>unauthenticated</code></td><td>Missing, expired or invalid token, or the caller is deactivated.</td></tr>
+    <tr><td>403</td><td><code>forbidden</code></td><td>The caller's role is not allowed to do this.</td></tr>
+    <tr><td>404</td><td><code>not_found</code></td><td>No such object, or the caller cannot see it.</td></tr>
+    <tr><td>409</td><td><code>email_taken</code></td><td>A user with this email already exists.</td></tr>
+    <tr><td>409</td><td><code>name_taken</code></td><td>A group with this name already exists (case is ignored).</td></tr>
+    <tr><td>409</td><td><code>key_taken</code></td><td>A project with this key already exists.</td></tr>
+    <tr><td>409</td><td><code>last_admin</code></td><td>The change would leave the organization without an active admin.</td></tr>
+    <tr><td>409</td><td><code>owns_projects</code></td><td>The user still owns projects and cannot be removed.</td></tr>
+    <tr><td>409</td><td><code>project_archived</code></td><td>The project is archived and cannot be changed.</td></tr>
+    <tr><td>409</td><td><code>not_archived</code></td><td>The project must be archived before it can be deleted.</td></tr>
+    <tr><td>409</td><td><code>limit_reached</code></td><td>An organization or group limit was reached, such as 200 groups.</td></tr>
+    <tr><td>422</td><td><code>validation_failed</code></td><td>A field is missing or invalid. <code>details</code> lists the fields.</td></tr>
+    <tr><td>422</td><td><code>user_deactivated</code></td><td>The target user is deactivated.</td></tr>
+    <tr><td>429</td><td><code>rate_limited</code></td><td>Too many requests. See <a href="/api/rate-limits/">Rate limits</a>.</td></tr>
+    <tr><td>500</td><td><code>internal_error</code></td><td>Something went wrong on our side. Safe to retry reads.</td></tr>
+  </tbody>
+</table>
+
+<h2>Validation details</h2>
+<p>For <code>422 validation_failed</code>, the error has an extra <code>details</code> list with one entry per invalid field:</p>
+<pre><code class="language-json">{
+  "error": {
+    "code": "validation_failed",
+    "message": "Some fields are invalid.",
+    "request_id": "req_5be27d0a11",
+    "details": [{"field": "key", "problem": "must start with a letter"}]
+  }
+}</code></pre>
+
+<h2>Retrying</h2>
+<p>Retry <code>429</code> after the time in the <code>Retry-After</code> header, and <code>500</code> with a backoff. Do not retry other 4xx errors without changing the request; they will fail the same way.</p>

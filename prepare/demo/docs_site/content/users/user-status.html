@@ -1,0 +1,32 @@
+<!--
+title: User status
+section: Users
+order: 3
+description: What active and deactivated mean, and how to deactivate or reactivate a user.
+-->
+<p>Every user has a status: <code>active</code> or <code>deactivated</code>. People with a pending invitation have no status because they are not users yet; see <a href="/users/inviting-users/">Inviting users</a>.</p>
+
+<h2>Active</h2>
+<p>An active user can sign in and use any token issued to them.</p>
+
+<h2>Deactivated</h2>
+<p>A deactivated user cannot sign in, and the API rejects their tokens with <code>401 unauthenticated</code>, including tokens that have not expired yet. Everything else is kept:</p>
+<ul>
+  <li>They stay a member of their groups.</li>
+  <li>They keep ownership of their projects.</li>
+  <li>Their email address stays reserved, so nobody else can be created or invited with it.</li>
+</ul>
+<p>Deactivated users cannot be added to new groups (<code>422 user_deactivated</code>) and cannot receive project transfers.</p>
+
+<h2>Deactivate a user</h2>
+<p>Deactivation is the reversible way to take access away, for example while someone is on leave. Only admins can deactivate users. You cannot deactivate yourself.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/users/usr_4f9a2c1e/deactivate \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>Reactivate a user</h2>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/users/usr_4f9a2c1e/reactivate \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<p>A reactivated user gets back exactly the groups and projects they had before.</p>
+
+<h2>Deactivate or remove?</h2>
+<p>If the person is leaving for good, <a href="/users/removing-users/">remove them from the organization</a> instead. Removal cannot be undone; deactivation can.</p>

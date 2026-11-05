@@ -1,0 +1,23 @@
+<!--
+title: Roles
+section: Roles and permissions
+order: 1
+description: The admin and viewer roles, and how Larkspur enforces them.
+-->
+<p>Larkspur has two roles. Every user has exactly one, and it applies to the whole organization.</p>
+
+<h2>Admin</h2>
+<p>Admins can read and change everything in the organization: users, invitations, groups and projects. Admins can see every project, including private projects that are not shared with any of their groups.</p>
+
+<h2>Viewer</h2>
+<p>Viewers can read, but not change anything. They can list users, groups and group members, and see the projects visible to them (see <a href="/projects/project-access/">Project access</a>). Viewers cannot see invitations.</p>
+<p>A viewer cannot change anything, even about their own groups or the projects they own. Every write request with a viewer token fails with <code>403 forbidden</code>.</p>
+
+<h2>How roles are enforced</h2>
+<p>The API reads the role from the caller's token and checks it on every request. A client cannot raise its own permissions by sending a different role in the request body or a header. The full list of which role may call which endpoint is in the <a href="/roles/permissions/">permission matrix</a>.</p>
+
+<h2>Custom roles</h2>
+<p>Larkspur does not support custom roles or per-project roles. If you need some people to manage only certain projects, that is not possible today: only admins can change projects.</p>
+
+<h2>Changing a role</h2>
+<p>See <a href="/users/changing-roles/">Changing roles</a>. Role changes apply to new tokens only.</p>

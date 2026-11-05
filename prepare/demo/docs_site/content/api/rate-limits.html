@@ -1,0 +1,30 @@
+<!--
+title: Rate limits
+section: API reference
+order: 4
+description: How many requests a token may make and what to do on 429.
+-->
+<p>Rate limits protect the API from runaway scripts. Limits apply per token, not per user or per IP address.</p>
+
+<h2>Limits</h2>
+<table>
+  <thead><tr><th>Requests</th><th>Limit</th></tr></thead>
+  <tbody>
+    <tr><td>All requests</td><td>300 per minute</td></tr>
+    <tr><td>Writes (<code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>)</td><td>30 per minute, counted inside the 300</td></tr>
+    <tr><td>Invitations sent or resent</td><td>20 per hour per organization</td></tr>
+  </tbody>
+</table>
+
+<h2>Headers</h2>
+<p>Every response tells you where you stand:</p>
+<ul>
+  <li><code>X-RateLimit-Limit</code>: the limit for this kind of request.</li>
+  <li><code>X-RateLimit-Remaining</code>: requests left in the current minute.</li>
+</ul>
+
+<h2>When you hit a limit</h2>
+<p>The API answers <code>429 rate_limited</code> with a <code>Retry-After</code> header in seconds. Wait that long and retry. Requests that got <code>429</code> were not carried out, so retrying a write does not apply it twice.</p>
+
+<h2>Higher limits</h2>
+<p>Limits cannot be raised per organization.</p>

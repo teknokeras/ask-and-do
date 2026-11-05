@@ -65,6 +65,7 @@ docker compose up starts Postgres/pgvector and the services.
 uv run pytest runs backend tests.
 uv run ruff check . and uv run ruff format . for lint and format.
 just ingest --url <docs-url> (or uv run python -m prepare.ingest) runs ingestion (incremental by default, --reset for a full rebuild; --help lists options). Needs the database (just db-up).
+just docs-serve builds the Larkspur demo docs (prepare/demo/docs_site/) and serves them on http://localhost:8001; just docs-build only builds.
 ask-and-do evals runs the eval suite and writes tables to prepare/evals/results/.
 Conventions
 Small, frequent commits with clear messages. Each feature ships with tests.

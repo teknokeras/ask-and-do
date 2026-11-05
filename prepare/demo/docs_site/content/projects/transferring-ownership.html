@@ -1,0 +1,32 @@
+<!--
+title: Transferring project ownership
+section: Projects
+order: 5
+description: Move one project, or all of a user's projects, to a new owner.
+-->
+<p>Every project has exactly one owner. You may need to change owners when someone changes teams, and you must do it before <a href="/users/removing-users/">removing a user</a> who owns projects.</p>
+
+<h2>Transfer one project</h2>
+<p>Set a new <code>owner_id</code> with a partial update of the project:</p>
+<pre><code class="language-bash">curl -s -X PATCH http://localhost:8000/v1/projects/prj_51c0de77 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"owner_id": "usr_0b7c55d2"}'</code></pre>
+
+<h2>Transfer all projects of a user</h2>
+<p>The transfer endpoint moves <strong>every</strong> project a user owns to another user in one call, including archived projects. Its path is short for "transfer": <code>POST /v1/users/{user_id}/xfer</code>. The user in the path is the current owner.</p>
+<pre><code class="language-bash">curl -s -X POST http://localhost:8000/v1/users/usr_4f9a2c1e/xfer \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"to_user_id": "usr_0b7c55d2"}'</code></pre>
+<p>The response lists the IDs of the projects that were moved:</p>
+<pre><code class="language-json">{"transferred": ["prj_51c0de77", "prj_a90e3f12"], "to_user_id": "usr_0b7c55d2"}</code></pre>
+
+<h2>Rules</h2>
+<ul>
+  <li>Only admins can transfer projects.</li>
+  <li>The new owner must be an active user. Transferring to a deactivated user fails with <code>422 user_deactivated</code>.</li>
+  <li>Transferring a user's projects to themselves fails with <code>422 validation_failed</code>.</li>
+  <li>Group access does not change. The new owner can see the project because they own it.</li>
+  <li>An archived project can be moved with the transfer endpoint, but not with <code>PATCH</code>, since archived projects cannot be edited.</li>
+</ul>

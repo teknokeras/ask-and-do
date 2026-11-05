@@ -75,7 +75,7 @@ Done when: `docker compose up` starts the database and CI runs green on an empty
 - [ ] FastAPI + SQLite for users, groups, projects
 - [ ] Two roles (admin, viewer) enforced from a mock JWT
 - [ ] Deliberately confusing endpoints (see section 7)
-- [ ] 20 to 30 pages of product docs, built as a crawlable static site
+- [x] 20 to 30 pages of product docs, built as a crawlable static site (28 pages, `prepare/demo/docs_site/`)
 - [ ] Tests for role enforcement
 
 Done when: the OpenAPI spec is generated, a viewer gets 403 on writes, tests pass, and the docs site serves locally.

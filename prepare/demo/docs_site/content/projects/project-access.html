@@ -1,0 +1,38 @@
+<!--
+title: Project access
+section: Projects
+order: 2
+description: Who can see a project, and how to share a project with a group.
+-->
+<p>Who can see a project depends on its visibility and on which groups it is shared with. Access is always shared with groups, never with individual users. To share a project with one person, put them in a group.</p>
+
+<h2>Visibility</h2>
+<table>
+  <thead><tr><th>Visibility</th><th>Who can see the project</th></tr></thead>
+  <tbody>
+    <tr><td><code>private</code></td><td>The owner, all admins, and members of groups the project is shared with.</td></tr>
+    <tr><td><code>internal</code></td><td>Every active user in the organization.</td></tr>
+  </tbody>
+</table>
+<p>New projects are private unless you set <code>visibility</code> when <a href="/projects/creating-projects/">creating</a> them.</p>
+<p>Seeing a project is read access only. Changing a project always needs the admin role, whatever the visibility; see the <a href="/roles/permissions/">permission matrix</a>.</p>
+
+<h2>Share a project with a group</h2>
+<pre><code class="language-bash">curl -s -X PUT http://localhost:8000/v1/projects/prj_51c0de77/groups/grp_7d2e91b0 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<p>Sharing again with a group that already has access does nothing and returns <code>200</code>.</p>
+
+<h2>Stop sharing with a group</h2>
+<pre><code class="language-bash">curl -s -X DELETE http://localhost:8000/v1/projects/prj_51c0de77/groups/grp_7d2e91b0 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>List the groups of a project</h2>
+<pre><code class="language-bash">curl -s http://localhost:8000/v1/projects/prj_51c0de77/groups \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>Rules</h2>
+<ul>
+  <li>Only admins can share or stop sharing a project.</li>
+  <li>Access of an <a href="/projects/archiving-projects/">archived project</a> cannot be changed (<code>409 project_archived</code>).</li>
+  <li>A project can be shared with up to 50 groups.</li>
+</ul>

@@ -1,0 +1,26 @@
+<!--
+title: Deleting groups
+section: Groups
+order: 4
+description: Delete a group and what happens to its members and project access.
+-->
+<p>Deleting a group removes the group itself. It does not delete or deactivate any users.</p>
+
+<h2>What deletion does</h2>
+<ul>
+  <li>The members keep their accounts and their other groups.</li>
+  <li>Every project the group had access to loses that access. Members who could only see a private project through this group can no longer see it.</li>
+  <li>The group's name becomes available again.</li>
+</ul>
+<div class="warning"><p>Deleting a group cannot be undone. Creating a new group with the same name does not bring back its members or its project access.</p></div>
+
+<h2>Request</h2>
+<p>Only admins can delete groups.</p>
+<pre><code class="language-bash">curl -s -X DELETE http://localhost:8000/v1/groups/grp_7d2e91b0 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<p>A successful deletion returns <code>204</code> with no body.</p>
+
+<h2>Check before you delete</h2>
+<p>List the projects the group can access first, so you know what will change:</p>
+<pre><code class="language-bash">curl -s "http://localhost:8000/v1/projects?group_id=grp_7d2e91b0" \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>

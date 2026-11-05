@@ -1,0 +1,37 @@
+<!--
+title: Authentication
+section: API reference
+order: 1
+description: Bearer tokens, what they contain, and how long they last.
+-->
+<p>Every request to the Larkspur API needs a bearer token in the <code>Authorization</code> header. There is no anonymous access.</p>
+<pre><code class="language-bash">curl -s http://localhost:8000/v1/users \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+
+<h2>Base URL</h2>
+<p>All endpoints are under <code>http://localhost:8000/v1</code>. The API only accepts JSON request bodies; send <code>Content-Type: application/json</code> with every request that has a body.</p>
+
+<h2>Getting a token</h2>
+<p>Tokens are issued by your organization's sign-in service. Larkspur checks tokens but does not issue them, and there is no endpoint to create a token.</p>
+
+<h2>What a token contains</h2>
+<p>A token is a signed JSON Web Token (JWT). Larkspur reads three claims from it:</p>
+<table>
+  <thead><tr><th>Claim</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>sub</code></td><td>The user ID of the caller, such as <code>usr_4f9a2c1e</code>.</td></tr>
+    <tr><td><code>role</code></td><td><code>admin</code> or <code>viewer</code>. See <a href="/roles/roles/">Roles</a>.</td></tr>
+    <tr><td><code>exp</code></td><td>Expiry time. Tokens are valid for 60 minutes.</td></tr>
+  </tbody>
+</table>
+<p>Because the role is in the token, <a href="/users/changing-roles/#when-the-change-takes-effect">role changes apply to new tokens only</a>.</p>
+
+<h2>When a token is rejected</h2>
+<p>The API answers <code>401 unauthenticated</code> when the header is missing, the token is expired or badly signed, or the user in <code>sub</code> is deactivated or no longer in the organization. Get a new token and retry. A valid token without the needed role gets <code>403 forbidden</code> instead.</p>
+
+<h2>Keeping tokens safe</h2>
+<ul>
+  <li>Do not put tokens in URLs. The API ignores tokens passed as query parameters.</li>
+  <li>Do not commit tokens to source control or paste them into tickets.</li>
+  <li>Tokens cannot be revoked one by one. To cut off a user's tokens at once, <a href="/users/user-status/#deactivate-a-user">deactivate the user</a>.</li>
+</ul>

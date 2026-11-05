@@ -1,0 +1,52 @@
+<!--
+title: Pagination and filtering
+section: API reference
+order: 3
+description: Page through lists with cursors and filter users, groups and projects.
+-->
+<p>Every endpoint that returns a list is paginated with cursors.</p>
+
+<h2>Pages and cursors</h2>
+<p>A list response has a <code>data</code> array and a <code>next_cursor</code>. Pass the cursor back to get the next page. When <code>next_cursor</code> is <code>null</code>, you have reached the last page.</p>
+<pre><code class="language-bash">curl -s "http://localhost:8000/v1/users?limit=100&amp;cursor=eyJpZCI6InVzcl8wYjdjIn0" \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN"</code></pre>
+<table>
+  <thead><tr><th>Parameter</th><th>Default</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>limit</code></td><td>50</td><td>1 to 200. Larger values fail with <code>400 invalid_request</code>.</td></tr>
+    <tr><td><code>cursor</code></td><td>none</td><td>The <code>next_cursor</code> from the previous page. Treat it as opaque.</td></tr>
+  </tbody>
+</table>
+<p>Lists are sorted by creation time, oldest first. A cursor stays valid for 24 hours.</p>
+
+<h2>Filtering users</h2>
+<table>
+  <thead><tr><th>Parameter</th><th>Example</th><th>Matches</th></tr></thead>
+  <tbody>
+    <tr><td><code>q</code></td><td><code>?q=ana</code></td><td>Name or email starting with the text, ignoring case.</td></tr>
+    <tr><td><code>role</code></td><td><code>?role=admin</code></td><td>Users with this role.</td></tr>
+    <tr><td><code>status</code></td><td><code>?status=deactivated</code></td><td>Users with this status. Without it, both statuses are returned.</td></tr>
+    <tr><td><code>group_id</code></td><td><code>?group_id=grp_7d2e91b0</code></td><td>Members of this group.</td></tr>
+  </tbody>
+</table>
+
+<h2>Filtering groups</h2>
+<table>
+  <thead><tr><th>Parameter</th><th>Example</th><th>Matches</th></tr></thead>
+  <tbody>
+    <tr><td><code>q</code></td><td><code>?q=plat</code></td><td>Group name starting with the text, ignoring case.</td></tr>
+    <tr><td><code>user_id</code></td><td><code>?user_id=usr_4f9a2c1e</code></td><td>Groups this user belongs to.</td></tr>
+  </tbody>
+</table>
+
+<h2>Filtering projects</h2>
+<table>
+  <thead><tr><th>Parameter</th><th>Example</th><th>Matches</th></tr></thead>
+  <tbody>
+    <tr><td><code>q</code></td><td><code>?q=pay</code></td><td>Project name or key starting with the text, ignoring case.</td></tr>
+    <tr><td><code>owner_id</code></td><td><code>?owner_id=usr_4f9a2c1e</code></td><td>Projects owned by this user.</td></tr>
+    <tr><td><code>group_id</code></td><td><code>?group_id=grp_7d2e91b0</code></td><td>Projects shared with this group.</td></tr>
+    <tr><td><code>archived</code></td><td><code>?archived=true</code></td><td>Archived projects only. Default <code>false</code>.</td></tr>
+  </tbody>
+</table>
+<p>Filters can be combined. They always apply on top of what the caller is allowed to see.</p>

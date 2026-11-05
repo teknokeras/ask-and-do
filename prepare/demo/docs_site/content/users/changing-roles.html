@@ -1,0 +1,21 @@
+<!--
+title: Changing roles
+section: Users
+order: 4
+description: Promote a viewer to admin or demote an admin to viewer.
+-->
+<p>Each user has one role for the whole organization: <code>admin</code> or <code>viewer</code>. See <a href="/roles/roles/">Roles</a> for what each role can do.</p>
+
+<h2>Change a user's role</h2>
+<p>Only admins can change roles. Send the new role in a partial update of the user:</p>
+<pre><code class="language-bash">curl -s -X PATCH http://localhost:8000/v1/users/usr_4f9a2c1e \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"role": "admin"}'</code></pre>
+<p>The same endpoint changes a user's display name (<code>{"name": "..."}</code>). A user's email address cannot be changed through the API.</p>
+
+<h2>When the change takes effect</h2>
+<p>The role is part of the user's token. A role change applies to <strong>new tokens only</strong>. A token issued before the change keeps the old role until it expires, which takes at most 60 minutes. To take admin rights away immediately, <a href="/users/user-status/#deactivate-a-user">deactivate the user</a>, which rejects all of their tokens at once, and reactivate them after the old tokens have expired.</p>
+
+<h2>The last admin</h2>
+<p>An organization must always have at least one active admin. Demoting, deactivating or removing the last active admin fails with <code>409 last_admin</code>. Promote someone else first.</p>

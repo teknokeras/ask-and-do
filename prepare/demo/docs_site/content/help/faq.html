@@ -1,0 +1,60 @@
+<!--
+title: FAQ
+section: Help
+order: 1
+description: Short answers to common questions about Larkspur.
+-->
+<p>Short answers, with links to the full pages.</p>
+
+<h2>Users</h2>
+
+<h3>Should I create or invite a user?</h3>
+<p>Invite when the person should confirm and choose their own name. Create when you need the account active right away, for example for a service account. See <a href="/users/creating-users/#create-vs-invite">Create vs invite</a>.</p>
+
+<h3>Why can't I find someone I invited?</h3>
+<p>Invited people are not users until they accept, so they are not in <code>GET /v1/users</code>. Look in <code>GET /v1/invitations?status=pending</code>.</p>
+
+<h3>An invitation expired. Do I need to send a new one?</h3>
+<p>No. Resend it: that resets the expiry to 7 days. You can resend up to 5 times.</p>
+
+<h3>Can I permanently delete a user?</h3>
+<p>The closest is <a href="/users/removing-users/">removing them from the organization</a>, which cannot be undone. There is no endpoint that erases all of a user's records.</p>
+
+<h3>Can I change a user's email address?</h3>
+<p>Not through the API. Remove the user and invite the new address, or create a new user.</p>
+
+<h3>I demoted an admin but they can still make changes. Why?</h3>
+<p>Their current token still carries the admin role. It stops working within 60 minutes. To cut access immediately, deactivate them. See <a href="/users/changing-roles/#when-the-change-takes-effect">When the change takes effect</a>.</p>
+
+<h2>Groups</h2>
+
+<h3>I updated a group and all its members disappeared.</h3>
+<p>You probably used <code>PUT</code> without a <code>members</code> list. PUT replaces the whole group. Use <code>PATCH</code> to rename a group. See <a href="/groups/updating-groups/">Updating groups</a>.</p>
+
+<h3>Can a group contain other groups?</h3>
+<p>No. Groups contain users only.</p>
+
+<h3>Is removing a member from a group the same as removing them from the organization?</h3>
+<p>No. Removing a group member affects that group only. Removing someone from the organization takes them out of everything. See <a href="/groups/group-members/#remove-a-member">Remove a member</a>.</p>
+
+<h2>Projects</h2>
+
+<h3>Can I rename a project key?</h3>
+<p>No. Keys are permanent. You can change the project's display name.</p>
+
+<h3>Can I restore a deleted project?</h3>
+<p>No. Deletion is permanent. Archive projects you might need again.</p>
+
+<h3>Can I share a project with one person?</h3>
+<p>Not directly. Projects are shared with groups. Create a group with that person in it.</p>
+
+<h2>API</h2>
+
+<h3>How long is a token valid?</h3>
+<p>60 minutes. See <a href="/api/authentication/">Authentication</a>.</p>
+
+<h3>How many items does a list return?</h3>
+<p>50 by default, up to 200 with <code>limit</code>. See <a href="/api/pagination/">Pagination and filtering</a>.</p>
+
+<h3>I got a 404 for a project I know exists.</h3>
+<p>You probably have a viewer token and the project is private and not shared with any of your groups. The API returns 404 instead of 403 so it does not reveal private project IDs.</p>

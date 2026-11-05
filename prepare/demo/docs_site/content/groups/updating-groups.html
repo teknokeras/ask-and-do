@@ -1,0 +1,41 @@
+<!--
+title: Updating groups
+section: Groups
+order: 3
+description: Change a group's name or description, or replace the whole group.
+-->
+<p>There are two ways to update a group, and they behave differently. Read this page before using either one.</p>
+<table>
+  <thead><tr><th></th><th>Update fields (PATCH)</th><th>Replace the group (PUT)</th></tr></thead>
+  <tbody>
+    <tr><td>Endpoint</td><td><code>PATCH /v1/groups/{group_id}</code></td><td><code>PUT /v1/groups/{group_id}</code></td></tr>
+    <tr><td>Fields you leave out</td><td>Keep their current value</td><td>Are cleared</td></tr>
+    <tr><td>Changes members</td><td>No</td><td>Yes, sets the full member list</td></tr>
+    <tr><td>Use it to</td><td>Rename a group or edit its description</td><td>Sync a group from another system</td></tr>
+  </tbody>
+</table>
+
+<h2>Update fields (PATCH)</h2>
+<p>A PATCH changes only the fields you send. It accepts <code>name</code> and <code>description</code>. Members cannot be changed with PATCH; use the <a href="/groups/group-members/">members endpoints</a>.</p>
+<pre><code class="language-bash">curl -s -X PATCH http://localhost:8000/v1/groups/grp_7d2e91b0 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Platform Engineering"}'</code></pre>
+<p>This renames the group and leaves the description and members as they were.</p>
+
+<h2>Replace a group (PUT)</h2>
+<p>A PUT replaces the whole group with what you send. You must send <code>name</code>, and the request also sets the description and the complete member list.</p>
+<div class="warning"><p>Fields you leave out of a PUT are not kept. If you omit <code>description</code> it is cleared. If you omit <code>members</code>, <strong>every member is removed from the group</strong>.</p></div>
+<pre><code class="language-bash">curl -s -X PUT http://localhost:8000/v1/groups/grp_7d2e91b0 \
+  -H "Authorization: Bearer $LARKSPUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Platform", "description": "Platform engineering",
+       "members": ["usr_4f9a2c1e", "usr_0b7c55d2"]}'</code></pre>
+<p>PUT is meant for tools that keep a group in sync with a list kept somewhere else, such as an HR system. For a quick rename, use PATCH.</p>
+
+<h2>Rules for both</h2>
+<ul>
+  <li>Only admins can update groups.</li>
+  <li>The same <a href="/groups/creating-groups/#naming-rules">naming rules</a> apply as when creating a group.</li>
+  <li>The group ID never changes, so project access is kept.</li>
+</ul>

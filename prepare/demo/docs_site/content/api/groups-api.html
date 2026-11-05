@@ -1,0 +1,89 @@
+<!--
+title: Groups API
+section: API reference
+order: 6
+description: Endpoint reference for groups and group membership.
+-->
+<p>This page lists the group endpoints. For guides with examples, see the Groups section.</p>
+
+<h2>The group object</h2>
+<pre><code class="language-json">{
+  "id": "grp_7d2e91b0",
+  "name": "Platform",
+  "description": "Platform engineering",
+  "member_count": 12,
+  "created_at": "2026-03-20T15:02:44Z"
+}</code></pre>
+<p>The group object does not include the member list. Use <code>GET /v1/groups/{group_id}/members</code>.</p>
+
+<h2>Group endpoints</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Method and path</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>GET /v1/groups</code></td>
+      <td>List groups. Filters: <code>q</code>, <code>user_id</code>.</td>
+    </tr>
+    <tr>
+      <td><code>GET /v1/groups/{group_id}</code></td>
+      <td>Get one group.</td>
+    </tr>
+    <tr>
+      <td><code>POST /v1/groups</code></td>
+      <td><a href="/groups/creating-groups/">Create a group</a>. Body: <code>name</code>, <code>description</code>,
+        <code>members</code>.</td>
+    </tr>
+    <tr>
+      <td><code>PATCH /v1/groups/{group_id}</code></td>
+      <td>Change <code>name</code> or <code>description</code>. Fields you leave out keep their value.</td>
+    </tr>
+    <tr>
+      <td><code>PUT /v1/groups/{group_id}</code></td>
+      <td><a href="/groups/updating-groups/#replace-a-group-put">Replace the group</a>. Fields you leave out are
+        cleared, including <code>members</code>.</td>
+    </tr>
+    <tr>
+      <td><code>DELETE /v1/groups/{group_id}</code></td>
+      <td><a href="/groups/deleting-groups/">Delete the group</a>. Users are not affected.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Member endpoints</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Method and path</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>GET /v1/groups/{group_id}/members</code></td>
+      <td>List members as user objects.</td>
+    </tr>
+    <tr>
+      <td><code>POST /v1/groups/{group_id}/members</code></td>
+      <td>Add a member. Body: <code>user_id</code>.</td>
+    </tr>
+    <tr>
+      <td><code>DELETE /v1/groups/{group_id}/members/{user_id}</code></td>
+      <td><a href="/groups/group-members/#remove-a-member">Remove a member</a> from this group only.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Limits</h2>
+<ul>
+  <li>200 groups per organization.</li>
+  <li>500 members per group.</li>
+  <li>Names: 3 to 64 characters, unique ignoring case.</li>
+  <li>Descriptions: up to 280 characters.</li>
+  <li>Group-test: group-test-one.</li>
+</ul>
+<p>Going over a count limit fails with <code>409 limit_reached</code>.</p>

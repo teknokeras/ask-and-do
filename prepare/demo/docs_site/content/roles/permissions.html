@@ -1,0 +1,50 @@
+<!--
+title: Permission matrix
+section: Roles and permissions
+order: 2
+description: Which role can call which endpoint.
+-->
+<p>This table lists every endpoint and the roles allowed to call it. A request with a role that is not allowed fails with <code>403 forbidden</code>.</p>
+
+<h2>Users and invitations</h2>
+<table>
+  <thead><tr><th>Action</th><th>Endpoint</th><th>Admin</th><th>Viewer</th></tr></thead>
+  <tbody>
+    <tr><td>List or get users</td><td><code>GET /v1/users</code>, <code>GET /v1/users/{user_id}</code></td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Create a user</td><td><code>POST /v1/users</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Update a user's name or role</td><td><code>PATCH /v1/users/{user_id}</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Deactivate or reactivate</td><td><code>POST /v1/users/{user_id}/deactivate</code>, <code>/reactivate</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Remove from the organization</td><td><code>DELETE /v1/org/members/{user_id}</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Transfer all projects</td><td><code>POST /v1/users/{user_id}/xfer</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>List invitations</td><td><code>GET /v1/invitations</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Invite, resend, revoke</td><td><code>POST /v1/invitations</code>, <code>POST /v1/invitations/{id}/resend</code>, <code>DELETE /v1/invitations/{id}</code></td><td>Yes</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<h2>Groups</h2>
+<table>
+  <thead><tr><th>Action</th><th>Endpoint</th><th>Admin</th><th>Viewer</th></tr></thead>
+  <tbody>
+    <tr><td>List or get groups</td><td><code>GET /v1/groups</code>, <code>GET /v1/groups/{group_id}</code></td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>List members</td><td><code>GET /v1/groups/{group_id}/members</code></td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Create a group</td><td><code>POST /v1/groups</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Update or replace a group</td><td><code>PATCH</code> or <code>PUT /v1/groups/{group_id}</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Add or remove a member</td><td><code>POST /v1/groups/{group_id}/members</code>, <code>DELETE /v1/groups/{group_id}/members/{user_id}</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Delete a group</td><td><code>DELETE /v1/groups/{group_id}</code></td><td>Yes</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<h2>Projects</h2>
+<table>
+  <thead><tr><th>Action</th><th>Endpoint</th><th>Admin</th><th>Viewer</th></tr></thead>
+  <tbody>
+    <tr><td>List or get projects</td><td><code>GET /v1/projects</code>, <code>GET /v1/projects/{project_id}</code></td><td>All projects</td><td>Visible projects only</td></tr>
+    <tr><td>List a project's groups</td><td><code>GET /v1/projects/{project_id}/groups</code></td><td>Yes</td><td>Visible projects only</td></tr>
+    <tr><td>Create a project</td><td><code>POST /v1/projects</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Edit or transfer one project</td><td><code>PATCH /v1/projects/{project_id}</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Share or stop sharing</td><td><code>PUT</code> or <code>DELETE /v1/projects/{project_id}/groups/{group_id}</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Archive or unarchive</td><td><code>POST /v1/projects/{project_id}/archive</code>, <code>/unarchive</code></td><td>Yes</td><td>No</td></tr>
+    <tr><td>Delete a project</td><td><code>DELETE /v1/projects/{project_id}</code></td><td>Yes</td><td>No</td></tr>
+  </tbody>
+</table>
+<p>A viewer who asks for a project they cannot see gets <code>404 not_found</code>, not <code>403</code>, so that private project IDs are not revealed.</p>

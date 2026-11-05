@@ -1,0 +1,43 @@
+<!--
+title: Projects API
+section: API reference
+order: 7
+description: Endpoint reference for projects, project access and archiving.
+-->
+<p>This page lists the project endpoints. For guides with examples, see the Projects section.</p>
+
+<h2>The project object</h2>
+<pre><code class="language-json">{
+  "id": "prj_51c0de77",
+  "name": "Payments",
+  "key": "PAY",
+  "owner_id": "usr_4f9a2c1e",
+  "visibility": "private",
+  "archived": false,
+  "created_at": "2026-04-01T08:00:00Z"
+}</code></pre>
+
+<h2>Project endpoints</h2>
+<table>
+  <thead><tr><th>Method and path</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>GET /v1/projects</code></td><td>List projects the caller can see. Filters: <code>q</code>, <code>owner_id</code>, <code>group_id</code>, <code>archived</code>.</td></tr>
+    <tr><td><code>GET /v1/projects/{project_id}</code></td><td>Get one project.</td></tr>
+    <tr><td><code>POST /v1/projects</code></td><td><a href="/projects/creating-projects/">Create a project</a>. Body: <code>name</code>, <code>key</code>, <code>owner_id</code>, <code>visibility</code>.</td></tr>
+    <tr><td><code>PATCH /v1/projects/{project_id}</code></td><td>Change <code>name</code>, <code>visibility</code> or <code>owner_id</code>. The key cannot be changed.</td></tr>
+    <tr><td><code>POST /v1/projects/{project_id}/archive</code></td><td><a href="/projects/archiving-projects/">Archive</a>: make the project read-only.</td></tr>
+    <tr><td><code>POST /v1/projects/{project_id}/unarchive</code></td><td>Make an archived project editable again.</td></tr>
+    <tr><td><code>DELETE /v1/projects/{project_id}</code></td><td><a href="/projects/deleting-projects/">Delete permanently</a>. The project must be archived.</td></tr>
+  </tbody>
+</table>
+
+<h2>Access endpoints</h2>
+<table>
+  <thead><tr><th>Method and path</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>GET /v1/projects/{project_id}/groups</code></td><td>List the groups the project is shared with.</td></tr>
+    <tr><td><code>PUT /v1/projects/{project_id}/groups/{group_id}</code></td><td><a href="/projects/project-access/#share-a-project-with-a-group">Share the project</a> with a group.</td></tr>
+    <tr><td><code>DELETE /v1/projects/{project_id}/groups/{group_id}</code></td><td>Stop sharing the project with a group.</td></tr>
+  </tbody>
+</table>
+<p>To move all of one user's projects to another user, see <code>POST /v1/users/{user_id}/xfer</code> in the <a href="/api/users-api/">Users API</a>.</p>
