@@ -18,6 +18,15 @@ def test_hash_lines_inside_code_are_not_headings():
     assert kinds == ["heading", "code"]
 
 
+def test_heading_link_symbols_are_dropped_from_the_body():
+    md = f"# Clients\n\n## Timeouts#\n\n{words(300)}\n\n## Proxies ¶\n\n{words(300)}\n"
+    chunks = chunk_page(page(md))
+    body = "\n".join(c.body for c in chunks)
+    assert "## Timeouts\n" in body and "## Proxies\n" in body
+    assert "#\n" not in body and "¶" not in body
+    assert "Clients > Proxies" in [c.breadcrumb for c in chunks]
+
+
 def test_code_blocks_and_tables_stay_whole():
     md = "\n".join(
         [

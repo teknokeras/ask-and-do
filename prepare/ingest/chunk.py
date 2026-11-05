@@ -29,7 +29,10 @@ MAX_WORDS = 380  # about 500 tokens: no chunk goes over this unless one block do
 MIN_WORDS = 50  # sections under this get merged into their parent when possible
 OVERLAP_WORDS = 40  # a paragraph this short is repeated at the start of the next split
 
-HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
+# Group 2 is the heading text without trailing "#", "¶" or "§": the self-link
+# symbols doc generators put after headings, which trafilatura keeps as text
+# ("## Create vs invite#"). A heading that really ends in "#" ("C#") loses it.
+HEADING = re.compile(r"^(#{1,6})\s+(.+?)[\s#¶§]*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
 
 
@@ -156,7 +159,9 @@ def parse_blocks(markdown: str) -> list[Block]:
             continue
         elif heading := HEADING.match(line):
             flush_paragraph()
-            blocks.append(Block("heading", line.strip(), level=len(heading.group(1))))
+            # Stored cleaned, so the symbols stay out of embedded and quoted text.
+            level = len(heading.group(1))
+            blocks.append(Block("heading", f"{'#' * level} {heading.group(2)}", level=level))
         elif not line.strip():
             flush_paragraph()
         else:
