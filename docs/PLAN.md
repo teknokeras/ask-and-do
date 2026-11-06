@@ -1,6 +1,6 @@
 # ask-and-do: plan
 
-Last updated: 2026-11-01. Time-box: about 10 days. Aim for a working end-to-end slice by day 4 and a feature freeze after day 7. Use one GitHub issue per phase.
+Last updated: 2026-11-06. Time-box: about 10 days. Aim for a working end-to-end slice by day 4 and a feature freeze after day 7. Use one GitHub issue per phase.
 
 ## 1. Goal and non-goals
 
@@ -70,7 +70,16 @@ The eval runner is a test harness only. It is not part of the product and users 
 
 Done when: `docker compose up` starts the database and CI runs green on an empty test.
 
-### Phase 1: mock admin API and docs (days 1 to 2)
+### Phase 1: ingestion and grounded Q&A (days 1 to 3)
+
+- [x] Ingest pipeline (section 5)
+- [ ] `search_docs` with retrieval, not-found gate and quote verification (section 6)
+- [ ] Chat endpoint returning answer, citations and a refusal state
+- [x] Fixture-based ingest tests
+
+Done when: a docs question returns a cited answer and an unanswerable question returns "not found". Push, update the README status, then start sharing the repo as in progress.
+
+### Phase 2: mock admin API and docs (days 3 to 4)
 
 - [ ] FastAPI + SQLite for users, groups, projects
 - [ ] Two roles (admin, viewer) enforced from a mock JWT
@@ -79,15 +88,6 @@ Done when: `docker compose up` starts the database and CI runs green on an empty
 - [ ] Tests for role enforcement
 
 Done when: the OpenAPI spec is generated, a viewer gets 403 on writes, tests pass, and the docs site serves locally.
-
-### Phase 2: ingestion and grounded Q&A (days 2 to 4)
-
-- [x] Ingest pipeline (section 5)
-- [ ] `search_docs` with retrieval, not-found gate and quote verification (section 6)
-- [ ] Chat endpoint returning answer, citations and a refusal state
-- [x] Fixture-based ingest tests
-
-Done when: a docs question returns a cited answer and an unanswerable question returns "not found". Push, update the README status, then start sharing the repo as in progress.
 
 ### Phase 3: tool gateway and routing (days 4 to 6)
 
@@ -178,10 +178,11 @@ Quality checks: an extraction-coverage check (flag pages whose extracted text is
 
 Common failure modes to test for: navigation or footer text in chunks, chunks too big or too small (tune with the eval set), flattened tables, duplicate content across versions, stale chunks after page removal.
 
-## 6. `search_docs` design (to refine in Phase 2)
+## 6. `search_docs` design (to refine in Phase 1)
 
 - Hybrid retrieval: vector search plus Postgres full-text search, merged. Optional cross-encoder reranker.
 - Not-found gate: if the best score is below a threshold, return no context and let the assistant say the docs do not cover it. Tune the threshold on the eval set, not by feel.
+  Provisional value: 0.70 (`SEARCH_MIN_SCORE`), from a 22-question probe of the demo docs on 2026-11-06, not an eval result. The lowest covered question scored 0.727 and the highest uncovered one 0.722, so the gap is thin. 0.70 kept all 12 covered questions and refused 8 of 10 uncovered ones. It leans low on purpose, since a wrong refusal cannot be recovered but a wrong pass still has to survive quote verification.
 - Structured answer: the model returns the answer, the chunk IDs it used, and a verbatim supporting quote for each claim.
 - Verify in code that each quote appears in the cited chunk. If not, discard the answer and return "not found".
 - Citations link to the source URL and section anchor.
