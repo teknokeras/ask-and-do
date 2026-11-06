@@ -1,4 +1,5 @@
 import hashlib
+import os
 import uuid
 from pathlib import Path
 
@@ -79,10 +80,13 @@ class FakeEmbedder:
 @pytest.fixture
 def db():
     """A connection to the dev database (just db-up), working in a throwaway
-    schema so tests never touch real chunks. Skips when no database is running."""
+    schema so tests never touch real chunks. Skips when no database is running,
+    except in CI, where a skip would let a green run hide untested store code."""
     try:
         conn = psycopg.connect(get_settings().database_url, autocommit=True, connect_timeout=3)
     except psycopg.OperationalError:
+        if os.environ.get("CI"):
+            raise
         pytest.skip("database not running (just db-up)")
     schema = f"test_{uuid.uuid4().hex[:12]}"
     conn.execute(f"CREATE SCHEMA {schema}")
