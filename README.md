@@ -13,7 +13,7 @@ Each piece has existing tools (see [Related work](#related-work)). This project 
 | Docs ingestion (crawl, extract, chunk, embed, store) | Working |
 | Demo docs site (28 pages) | Working |
 | Mock admin API | Not started |
-| `search_docs` and chat endpoint | Not started |
+| `search_docs` and chat endpoint | In progress: hybrid retrieval and not-found gate built; answers, quote verification and the chat endpoint not started |
 | Tool gateway and routing | Not started |
 | Evals | Not started |
 | React component | Not started |

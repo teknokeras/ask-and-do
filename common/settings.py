@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     # directory that the OS may clear, which means a fresh download.
     embed_cache_dir: str = ".cache/fastembed"
 
+    # The not-found gate: below this cosine similarity, search returns nothing.
+    # Provisional until the evals tune it, and specific to the embedding model.
+    search_min_score: float = 0.70
+
 
 @lru_cache
 def get_settings() -> Settings:
